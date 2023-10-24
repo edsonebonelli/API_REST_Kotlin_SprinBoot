@@ -1,5 +1,6 @@
 package br.com.ptbank.forum.service
 
+import br.com.ptbank.forum.dto.AtualizacaoTopicoForm
 import br.com.ptbank.forum.dto.TopicoForm
 import br.com.ptbank.forum.dto.TopicoView
 import br.com.ptbank.forum.mapper.TopicoFormMapper
@@ -32,5 +33,21 @@ class TopicoService(
         val topico = topicoFormMapper.map(form)
         topico.id = topicos.size.toLong() + 1
         topicos = topicos.plus(topico)
+    }
+
+    fun atualizar(form: AtualizacaoTopicoForm) {
+        val topico = topicos.stream().filter { t ->
+            t.id == form.id
+        }.findFirst().get()
+        topicos = topicos.minus(topico).plus(Topico(
+            id = form.id,
+            titulo = form.titulo,
+            mensagem = form.mensagem,
+            autor = topico.autor,
+            departamento = topico.departamento,
+            respostas = topico.respostas,
+            status = topico.status,
+            dataCriação = topico.dataCriação
+        ))
     }
 }
